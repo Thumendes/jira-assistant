@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: AppLayoutProps) {
     <>
       {/* Navigation */}
       <nav className="py-4">
-        <div className="container mx-auto flex items-center justify-between">
+        <div className="container mx-auto px-4 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold">Jira Utils</h3>
           </div>
@@ -33,6 +33,7 @@ export default async function AppLayout({ children }: AppLayoutProps) {
 
             <Link href="/">Home</Link>
             <Link href="/credentials">Credentials</Link>
+            <Link href="/refiner">Refiner</Link>
           </div>
         </div>
       </nav>

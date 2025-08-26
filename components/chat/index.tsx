@@ -16,12 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DeepPartial } from "ai";
 import { Loader2, LogOut, Pencil, StopCircle, Trash } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  Control,
-  useFieldArray,
-  useForm,
-  UseFormReturn,
-} from "react-hook-form";
+import { Control, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -74,9 +69,9 @@ export function Chat() {
   }
 
   return (
-    <main className="grid grid-cols-2 h-screen">
-      <div className="flex flex-col p-8 h-full overflow-y-auto space-y-4">
-        <header className="flex items-center justify-between mb-4">
+    <main className="grid grid-cols-1 lg:grid-cols-2">
+      <div className="flex flex-col p-4 sm:p-6 lg:p-8 space-y-4">
+        <header className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h1 className="text-2xl font-bold">Jira AI</h1>
 
           <Button variant="outline" size="icon">
@@ -132,7 +127,7 @@ export function Chat() {
         )}
       </div>
 
-      <div className="bg-muted p-8 h-full overflow-y-auto">
+      <div className="bg-muted p-4 sm:p-6 lg:p-8">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {object?.issues?.map((issue, index) => (
@@ -251,13 +246,13 @@ ${issue?.description?.expectedResult}`;
 
   return (
     <Card className="p-3 space-y-2">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full" />
-          <p className="text-sm font-semibold">{issue?.summary}</p>
+          <p className="text-sm font-semibold break-words">{issue?.summary}</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">{issue?.type}</Badge>
           {onEdit && (
             <Button variant="outline" size="icon" onClick={handleEdit}>
@@ -272,7 +267,7 @@ ${issue?.description?.expectedResult}`;
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-muted-foreground break-words">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
       </p>
     </Card>
@@ -292,7 +287,7 @@ export function IssueStepsForm({ control }: IssueStepsFormProps) {
   return (
     <div className="space-y-2">
       {fields.map((field, index) => (
-        <div key={field.id} className="flex items-center gap-2">
+        <div key={field.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
           <FormField
             control={control}
             name={`description.steps.${index}.description`}
@@ -300,7 +295,7 @@ export function IssueStepsForm({ control }: IssueStepsFormProps) {
               <FormItem>
                 <FormLabel>Passo {index + 1}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Passo {index + 1}" {...field} />
+                  <Input className="w-full sm:w-auto flex-1" placeholder="Passo {index + 1}" {...field} />
                 </FormControl>
               </FormItem>
             )}

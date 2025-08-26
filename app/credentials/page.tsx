@@ -10,7 +10,7 @@ export default async function CredentialsPage() {
   const jiraEmailKey = cookiesStore.get("jiraEmailKey")?.value;
 
   return (
-    <main className="container mx-auto max-w-xl py-24">
+    <main className="container mx-auto max-w-xl px-4 py-24">
       <CredentialsForm
         defaultValues={{
           apiKey,
