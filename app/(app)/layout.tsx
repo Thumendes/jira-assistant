@@ -31,9 +31,21 @@ export default async function AppLayout({ children }: AppLayoutProps) {
           <div className="flex items-center gap-4">
             <ThemeSwitch />
 
-            <Link href="/">Home</Link>
-            <Link href="/credentials">Credentials</Link>
-            <Link href="/refiner">Refiner</Link>
+            <Link href="/" className="text-sm">
+              Home
+            </Link>
+
+            <Link href="/work" className="text-sm">
+              Meu trabalho
+            </Link>
+
+            <Link href="/credentials" className="text-sm">
+              Credentials
+            </Link>
+
+            <Link href="/refiner" className="text-sm">
+              Refiner
+            </Link>
           </div>
         </div>
       </nav>

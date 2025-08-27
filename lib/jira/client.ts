@@ -3,6 +3,7 @@ import { Duration } from "../duration";
 import { createJiraClientApi, JiraClient } from "./api";
 import { DateInterval } from "./dateInterval";
 import { components } from "./schema";
+import { IssueStatus } from "./types";
 
 type JQLOptions = {
   fields?: string[];
@@ -136,6 +137,22 @@ export class Jira {
     );
 
     return data;
+  }
+
+  async getMyWorkingIssues(status?: IssueStatus | IssueStatus[]) {
+    const filter: string[] = [`assignee=currentUser()`];
+
+    if (status) {
+      if (Array.isArray(status)) {
+        filter.push(`status in (${status.join(",")})`);
+      } else {
+        filter.push(`status = ${status}`);
+      }
+    }
+
+    const jql = filter.join(" and ");
+
+    return this.jql(jql);
   }
 
   async me() {
