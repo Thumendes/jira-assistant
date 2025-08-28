@@ -126,15 +126,21 @@ export class Jira {
 
     const started = startedAt ?? new Date(Date.now() - seconds * 1000);
 
+    const body = {
+      timeSpentSeconds: seconds,
+      started: format(started, "yyyy-MM-dd'T'HH:mm:ss.SSSXX"),
+    };
+
+    console.log(body);
+
     const data = await this.try(
       this.client.POST("/rest/api/3/issue/{issueIdOrKey}/worklog", {
         params: { path: { issueIdOrKey } },
-        body: {
-          timeSpentSeconds: seconds,
-          started: format(started, "yyyy-MM-dd'T'HH:mm:ss.SSSXX"),
-        },
+        body,
       })
     );
+
+    console.log(data);
 
     return data;
   }
