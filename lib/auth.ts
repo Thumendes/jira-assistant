@@ -9,6 +9,7 @@ export const auth = betterAuth({
     atlassian: {
       clientId: process.env.ATLASSIAN_CLIENT_ID as string,
       clientSecret: process.env.ATLASSIAN_CLIENT_SECRET as string,
+      scopes: ["read:jira-user", "read:jira-work", "write:jira-work", "offline_access"],
     },
   },
 });

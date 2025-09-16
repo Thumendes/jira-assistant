@@ -2,12 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   async function handleLogin() {
-    const data = await authClient.signIn.social({ provider: "atlassian" });
-
-    console.log(data);
+    toast.promise(authClient.signIn.social({ provider: "atlassian" }), {
+      loading: "Redirecting to Atlassian...",
+      success: "Authentication successful! Redirecting...",
+      error: (error) => `Error: ${error.message}`,
+    });
   }
 
   return (
