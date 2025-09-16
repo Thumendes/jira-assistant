@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "schema:jira": "openapi-typescript https://developer.atlassian.com/cloud/jira/platform/swagger-v3.v3.json -o ./lib/jira/schema.d.ts",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
@@ -49,6 +50,8 @@
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "next-themes": "^0.4.6",
+    "openapi-fetch": "^0.14.0",
+    "openapi-typescript": "^7.9.1",
     "react": "19.1.0",
     "react-day-picker": "^9.10.0",
     "react-dom": "19.1.0",
@@ -57,8 +60,10 @@
     "recharts": "2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
+    "ts-pattern": "^5.8.0",
     "vaul": "^1.1.2",
-    "zod": "^4.1.8"
+    "zod": "^4.1.8",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
