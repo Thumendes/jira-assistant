@@ -1,25 +1,19 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { GalleryVerticalEnd } from "lucide-react";
+import { LoginForm } from "@/components/auth/login-form";
 
 export default function LoginPage() {
-  async function handleLogin() {
-    toast.promise(authClient.signIn.social({ provider: "atlassian" }), {
-      loading: "Redirecting to Atlassian...",
-      success: "Authentication successful! Redirecting...",
-      error: (error) => `Error: ${error.message}`,
-    });
-  }
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <header>
-        <h1>Login Page</h1>
-      </header>
+    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <a href="#" className="flex items-center gap-2 self-center font-medium">
+          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <GalleryVerticalEnd className="size-4" />
+          </div>
+          Jira Assistant
+        </a>
 
-      <Button onClick={handleLogin}>Login with Atlassian</Button>
-    </main>
+        <LoginForm />
+      </div>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { AppNavbar } from "@/components/layout/nav";
+import { RootLayout } from "@/components/layout/app-layout";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -10,10 +10,5 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     return redirect("/login");
   }
 
-  return (
-    <>
-      <AppNavbar user={session.user} />
-      {children}
-    </>
-  );
+  return <RootLayout user={session.user}>{children}</RootLayout>;
 }
