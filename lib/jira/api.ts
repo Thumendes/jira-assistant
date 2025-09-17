@@ -12,8 +12,8 @@ const logMiddleware: Middleware = {
     const body = request.method === "POST" ? JSON.stringify(await clone.json(), null, 2) : null;
     console.log(`>> ${request.method} ${request.url}${body ? `\n${body}` : ""}`);
 
-    const Authorization = request.headers.get("Authorization");
-    if (Authorization) console.log(`>> Authorization: ${Authorization}`);
+    // const Authorization = request.headers.get("Authorization");
+    // if (Authorization) console.log(`>> Authorization: ${Authorization}`);
   },
   onResponse: ({ response }) => {
     const emoji = response.ok ? "✅" : "🚫";

@@ -13,9 +13,10 @@ type TrackTimeMutation = {
 
 type UseTrackTimeProps = {
   lastIssueKey?: string;
+  onSuccess?: () => void;
 };
 
-export function useTrackTime({ lastIssueKey }: UseTrackTimeProps) {
+export function useTrackTime({ lastIssueKey, onSuccess }: UseTrackTimeProps) {
   const trackTimeMutation = useMutation({
     mutationFn: async (data: TrackTimeMutation) => {
       const res = await fetch("/api/jira/track-time", {
@@ -32,7 +33,10 @@ export function useTrackTime({ lastIssueKey }: UseTrackTimeProps) {
 
       return json;
     },
-    onSuccess: () => toast.success("Horas registradas com sucesso"),
+    onSuccess: () => {
+      toast.success("Horas registradas com sucesso");
+      onSuccess?.();
+    },
     onError: (error) => toast.error(`Houve um erro: ${error.message}`),
   });
 

@@ -26,7 +26,7 @@ export class Jira {
     const data = await this.try(
       this.client.POST("/rest/api/3/search/jql", {
         body: { fields, maxResults: maxResults ?? 1000, jql },
-      }),
+      })
     );
 
     if (!data.issues) return [];
@@ -38,7 +38,9 @@ export class Jira {
 
   async getWorklog(options: WorklogOptions) {
     const interval =
-      options instanceof DateInterval ? options : DateInterval.builder().from(options.from).to(options.to).build();
+      options instanceof DateInterval
+        ? options
+        : DateInterval.builder().from(options.from).to(options.to).build();
 
     const { from, to } = interval.formatted();
 
@@ -47,12 +49,21 @@ export class Jira {
     const jql = `worklogDate >= "${from}" and worklogDate <= "${to}" and worklogAuthor=currentUser()`;
 
     const data = await this.jql(jql, {
-      fields: ["worklog", "parent", "priority", "summary", "status", "project", "issuetype"],
+      fields: [
+        "worklog",
+        "parent",
+        "priority",
+        "summary",
+        "status",
+        "project",
+        "issuetype",
+      ],
     });
 
     // Calcula o total de tempo gasto em cada issue
     const items = data.map((issue) => {
-      const worklog = issue.fields?.worklog as components["schemas"]["PageOfWorklogs"];
+      const worklog = issue.fields
+        ?.worklog as components["schemas"]["PageOfWorklogs"];
 
       const worklogs =
         worklog.worklogs?.filter((worklog) => {
@@ -103,8 +114,63 @@ export class Jira {
     };
   }
 
-  async trackTime(issueIdOrKey: string, timeSpentSeconds: number | Duration, { startedAt }: { startedAt?: Date } = {}) {
-    const seconds = typeof timeSpentSeconds === "number" ? timeSpentSeconds : timeSpentSeconds.seconds;
+  async getIssue(
+    issueIdOrKey: string,
+    { fields = ["*all"] }: { fields?: string[] } = {}
+  ) {
+    const data = await this.try(
+      this.client.GET("/rest/api/3/issue/{issueIdOrKey}", {
+        params: { path: { issueIdOrKey }, query: { fields: fields } },
+      })
+    );
+
+    return data;
+  }
+
+  async getTransitions(issueIdOrKey: string) {
+    const data = await this.try(
+      this.client.GET("/rest/api/3/issue/{issueIdOrKey}/transitions", {
+        params: { path: { issueIdOrKey } },
+      })
+    );
+
+    return data;
+  }
+
+  async getIssueWorklogs(issueIdOrKey: string) {
+    const data = await this.try(
+      this.client.GET("/rest/api/3/issue/{issueIdOrKey}/worklog", {
+        params: { path: { issueIdOrKey } },
+      })
+    );
+
+    console.log(JSON.stringify(data, null, 2));
+
+    return data;
+  }
+
+  async transitionIssue(issueIdOrKey: string, transitionId: string) {
+    const body = { transition: { id: transitionId } } as const;
+
+    const data = await this.try(
+      this.client.POST("/rest/api/3/issue/{issueIdOrKey}/transitions", {
+        params: { path: { issueIdOrKey } },
+        body,
+      })
+    );
+
+    return data;
+  }
+
+  async trackTime(
+    issueIdOrKey: string,
+    timeSpentSeconds: number | Duration,
+    { startedAt }: { startedAt?: Date } = {}
+  ) {
+    const seconds =
+      typeof timeSpentSeconds === "number"
+        ? timeSpentSeconds
+        : timeSpentSeconds.seconds;
 
     const started = startedAt ?? new Date(Date.now() - seconds * 1000);
 
@@ -119,7 +185,7 @@ export class Jira {
       this.client.POST("/rest/api/3/issue/{issueIdOrKey}/worklog", {
         params: { path: { issueIdOrKey } },
         body,
-      }),
+      })
     );
 
     console.log(data);
@@ -151,7 +217,7 @@ export class Jira {
   private async try<
     Value extends
       | { data: unknown; error?: never; response: Response }
-      | { data?: never; error: unknown; response: Response },
+      | { data?: never; error: unknown; response: Response }
   >(promise: Promise<Value>): Promise<NonNullable<Value["data"]>> {
     const { data, error, response } = await promise;
 

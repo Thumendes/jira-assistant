@@ -118,26 +118,17 @@ export default async function HomePage() {
                     className={isBlocked ? "bg-muted/30 text-muted-foreground" : undefined}
                   >
                     <TableCell>
-                      {jiraBaseUrl ? (
-                        <a
-                          href={`${jiraBaseUrl}/browse/${key}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline"
-                        >
-                          <div className="max-w-[26rem] truncate flex items-center gap-1">
-                            {isBlocked ? <Lock className="h-3.5 w-3.5 text-muted-foreground" /> : null}
-                            <span className="font-medium">{key}</span>
-                            <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
-                            {summary ? <span className="text-muted-foreground"> — {summary}</span> : null}
-                          </div>
-                        </a>
-                      ) : (
+                      <a
+                        href={`/issues/${key}`}
+                        className="hover:underline"
+                      >
                         <div className="max-w-[26rem] truncate flex items-center gap-1">
+                          {isBlocked ? <Lock className="h-3.5 w-3.5 text-muted-foreground" /> : null}
                           <span className="font-medium">{key}</span>
+                          {jiraBaseUrl ? <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" /> : null}
                           {summary ? <span className="text-muted-foreground"> — {summary}</span> : null}
                         </div>
-                      )}
+                      </a>
                     </TableCell>
                     <TableCell>
                       <Badge className={`border ${statusBadgeClass(statusName)}`}>{statusName ?? "—"}</Badge>
