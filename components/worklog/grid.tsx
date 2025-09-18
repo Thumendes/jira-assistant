@@ -2,11 +2,14 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { cn } from "@/lib/utils";
 import { Duration } from "@/lib/utils/duration";
 import { addDays, format, isToday, isWithinInterval } from "date-fns";
-import { cookies } from "next/headers";
 import { TracktTimeButton } from "../track-time";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { getWorklog } from "./get-worklog";
 import { IssueDayCell } from "./issue-day-cell";
+import { getUserSettings } from "@/lib/settings/cache";
+import { trytm } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 type IssueLite = { id?: string; key?: string; fields?: { summary?: string } };
 type WorklogEntry = { started?: string; timeSpentSeconds?: number };
@@ -31,10 +34,30 @@ function secondsForIssueOnDate(item: WorklogItem, date: Date) {
 }
 
 export async function WorklogGrid() {
-  const cookiesStore = await cookies();
-  const jiraBaseUrl = cookiesStore.get("jiraBaseUrl")?.value;
+  const settings = await getUserSettings();
+  const jiraBaseUrl = settings.get("jira-base-url");
 
-  const data = await getWorklog();
+  if (!jiraBaseUrl) {
+    return (
+      <Alert className="max-w-3xl" variant="destructive">
+        <AlertTitle>Configuração do Jira ausente</AlertTitle>
+        <AlertDescription>
+          Para visualizar os worklogs, configure as credenciais do Jira em{" "}
+          <Link href="/profile" className="underline font-medium">Perfil</Link>.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  const [data, err] = await trytm(getWorklog());
+  if (err) {
+    return (
+      <Alert className="max-w-3xl" variant="destructive">
+        <AlertTitle>Erro ao carregar worklogs</AlertTitle>
+        <AlertDescription>{err.message}</AlertDescription>
+      </Alert>
+    );
+  }
 
   const days = data.grid as Array<{ date: Date; isWeekend: boolean }>;
   const items = data.items as WorklogItem[];

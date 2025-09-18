@@ -3,6 +3,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { format, isAfter } from "date-fns";
+import { getUserSettings } from "@/lib/settings/cache";
+import { trytm } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 type Props = {
   targetHours?: number;
@@ -17,7 +21,30 @@ function formatHours(value: number) {
 }
 
 export async function WorklogStats({ targetHours = 160 }: Props) {
-  const data = await getWorklog();
+  const settings = await getUserSettings();
+  const jiraBaseUrl = settings.get("jira-base-url");
+
+  if (!jiraBaseUrl) {
+    return (
+      <Alert className="max-w-3xl" variant="destructive">
+        <AlertTitle>Configuração do Jira ausente</AlertTitle>
+        <AlertDescription>
+          Para visualizar os worklogs, configure as credenciais do Jira em{" "}
+          <Link href="/profile" className="underline font-medium">Perfil</Link>.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  const [data, err] = await trytm(getWorklog());
+  if (err) {
+    return (
+      <Alert className="max-w-3xl" variant="destructive">
+        <AlertTitle>Erro ao carregar worklogs</AlertTitle>
+        <AlertDescription>{err.message}</AlertDescription>
+      </Alert>
+    );
+  }
 
   const today = new Date();
   const monthFrom = new Date(data.from);
