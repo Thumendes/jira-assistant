@@ -8,7 +8,7 @@ import { Duration } from "@/lib/utils/duration";
 const bodySchema = z.object({
   issueKey: z.string().min(1),
   timeSpent: z.string().min(1),
-  date: z.string().datetime().optional(),
+  date: z.iso.datetime().optional(),
 });
 
 export async function POST(request: NextRequest) {

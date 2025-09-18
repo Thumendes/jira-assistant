@@ -167,19 +167,21 @@ export class Jira {
     timeSpentSeconds: number | Duration,
     { startedAt }: { startedAt?: Date } = {}
   ) {
+    console.log("trackTime", { issueIdOrKey, timeSpentSeconds, startedAt });
     const seconds =
       typeof timeSpentSeconds === "number"
         ? timeSpentSeconds
         : timeSpentSeconds.seconds;
 
     const started = startedAt ?? new Date(Date.now() - seconds * 1000);
+    console.log("started", started);
 
     const body = {
       timeSpentSeconds: seconds,
-      started: format(started, "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
+      started: started.toISOString().replace("Z", "+0000"),
     };
 
-    console.log(body);
+    console.log("body", body);
 
     const data = await this.try(
       this.client.POST("/rest/api/3/issue/{issueIdOrKey}/worklog", {
