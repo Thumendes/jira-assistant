@@ -176,7 +176,7 @@ export class Jira {
 
     const body = {
       timeSpentSeconds: seconds,
-      started: format(started, "yyyy-MM-dd'T'HH:mm:ss.SSSXX"),
+      started: format(started, "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
     };
 
     console.log(body);

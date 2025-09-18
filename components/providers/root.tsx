@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "../ui/sonner";
 import { ThemeProvider } from "next-themes";
 import { Dialoger } from "../dialog";
+
 type RootProvidersProps = {
   children: React.ReactNode;
 };
