@@ -16,6 +16,7 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
+  IconTimeline,
   IconUsers,
 } from "@tabler/icons-react";
 
@@ -51,6 +52,11 @@ const data = {
       url: "/worklog",
       icon: IconChartBar,
     },
+    {
+      title: "Timeline",
+      url: "/timeline",
+      icon: IconTimeline,
+    }
   ],
   navClouds: [
     {

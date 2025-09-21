@@ -36,21 +36,57 @@ export const IssueStatus = {
 export type IssueStatus = (typeof IssueStatus)[keyof typeof IssueStatus];
 
 export type IssueFields = {
+  // Core
   summary: string;
-  description: unknown;
-  created: string;
+  // Jira Cloud uses ADF (Atlassian Document Format); keep as unknown to avoid tight coupling
+  description?: unknown;
+  created: string; // ISO date-time string
+
+  // Time tracking (top-level numeric aggregations)
   timeestimate?: number | null;
   aggregatetimeestimate?: number | null;
   timeoriginalestimate?: number | null;
+  aggregatetimeoriginalestimate?: number | null;
+  timespent?: number | null;
+  aggregatetimespent?: number | null;
+  timetracking?: components["schemas"]["TimeTrackingDetails"];
+
+  // Relations & metadata
   project?: components["schemas"]["Project"];
   priority?: components["schemas"]["Priority"];
   assignee?: components["schemas"]["User"];
-  status?: components["schemas"]["Status"] & { id: string; name: string };
+  reporter?: components["schemas"]["User"];
+  creator?: components["schemas"]["User"];
+  status?: components["schemas"]["StatusDetails"];
   issuetype?: components["schemas"]["IssueTypeDetails"];
+  parent?: components["schemas"]["IssueBean"] | null;
+  labels?: string[];
+  components?: components["schemas"]["ProjectComponent"][];
+  issuelinks?: components["schemas"]["IssueLink"][];
+  fixVersions?: components["schemas"]["Version"][];
+  versions?: components["schemas"]["Version"][];
+  watches?: components["schemas"]["Watchers"];
+  votes?: components["schemas"]["Votes"];
   worklog?: components["schemas"]["PageOfWorklogs"];
-  duedate?: string;
+  comment?: components["schemas"]["PageOfComments"];
+
+  // Dates & resolution
+  duedate?: string | null; // yyyy-MM-dd
+  resolutiondate?: string | null;
+  resolution?: components["schemas"]["Resolution"] | null;
+  lastViewed?: string | null;
+  statuscategorychangedate?: string | null;
+
+  // Custom fields present in the real sample
+  customfield_10016?: number | null; // Story Points
+  customfield_10014?: string | null; // Epic Link (issue key)
   customfield_10078?: number | null;
   customfield_10021?: object | null;
+
+  // Misc
+  environment?: string | null;
+  // Subtasks are represented as IssueBean in many responses; keep loose typing here
+  subtasks?: components["schemas"]["IssueBean"][];
 };
 
 export const StoryPoint = {

@@ -5,9 +5,14 @@ import { SiteHeader } from "./site-header";
 type PageLayoutProps = {
   children: React.ReactNode;
   title?: string;
-};
+} & React.HTMLAttributes<HTMLDivElement>;
 
-export function PageLayout({ children, title }: PageLayoutProps) {
+export function PageLayout({
+  children,
+  title,
+  className,
+  ...props
+}: PageLayoutProps) {
   return (
     <>
       <SiteHeader title={title} />
@@ -22,7 +27,9 @@ export function PageLayout({ children, title }: PageLayoutProps) {
           <DataTable data={data} />
         </div>*/}
 
-          {children}
+          <main className={className} {...props}>
+            {children}
+          </main>
         </div>
       </div>
     </>

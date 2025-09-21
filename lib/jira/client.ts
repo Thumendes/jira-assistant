@@ -1,7 +1,7 @@
 import { addDays, format, isWeekend, isWithinInterval } from "date-fns";
 import { JiraClient } from "./api";
 import { components } from "./schema";
-import { IssueStatus } from "./types";
+import { IssueFields, IssueStatus } from "./types";
 import { DateInterval } from "../utils/dateInterval";
 import { Duration } from "../utils/duration";
 
@@ -211,6 +211,41 @@ export class Jira {
     return this.jql(jql);
   }
 
+  async listProjects() {
+    const data = await this.try(
+      this.client.GET("/rest/api/3/project", {
+        params: { query: { expand: "insight" } },
+      })
+    );
+
+    return data;
+  }
+
+  async getProjectIssuesWithEstimates(projectKey: string) {
+    const jql = `project = ${projectKey} and duedate is not EMPTY and assignee = currentUser()`;
+    const fields = [
+      "summary",
+      "issuetype",
+      "priority",
+      "project",
+      "duedate",
+      "created",
+      "resolutiondate",
+      "status",
+      "timetracking",
+      "assignee",
+      "labels",
+    ];
+
+    const issues = await this.jql(jql, { fields });
+
+    return issues.map((issue) => {
+      const f = issue.fields as IssueFields;
+
+      return { ...issue, fields: f };
+    });
+  }
+
   async me() {
     const data = await this.try(this.client.GET("/rest/api/3/myself"));
     return data;
@@ -235,3 +270,5 @@ export class Jira {
     return data;
   }
 }
+
+export type Project = components["schemas"]["Project"];
