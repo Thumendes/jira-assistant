@@ -1,5 +1,12 @@
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { IssueFields, IssueStatus } from "@/lib/jira/types";
 import { Duration } from "@/lib/utils/duration";
 import { format, isBefore } from "date-fns";
@@ -15,8 +22,12 @@ type IssuesTableProps = {
 
 export function IssuesTable({ issues, jiraBaseUrl }: IssuesTableProps) {
   const sortedIssues = [...issues].sort((a, b) => {
-    const aPriority = a.fields?.priority?.id ? Number((a.fields.priority.id as unknown as number)) : 100;
-    const bPriority = b.fields?.priority?.id ? Number((b.fields.priority.id as unknown as number)) : 100;
+    const aPriority = a.fields?.priority?.id
+      ? Number(a.fields.priority.id as unknown as number)
+      : 100;
+    const bPriority = b.fields?.priority?.id
+      ? Number(b.fields.priority.id as unknown as number)
+      : 100;
 
     if (aPriority !== bPriority) return aPriority - bPriority;
 
@@ -43,14 +54,25 @@ export function IssuesTable({ issues, jiraBaseUrl }: IssuesTableProps) {
             const fields: IssueFields | object = issue.fields ?? ({} as object);
             const key = issue.key ?? issue.id;
             const summary: string | undefined = (fields as IssueFields).summary;
-            const statusName: string | undefined = (fields as IssueFields).status?.name;
-            const statusId: string | undefined = (fields as IssueFields).status?.id;
-            const isBlocked = Boolean((fields as IssueFields).customfield_10021);
+            const statusName: string | undefined = (fields as IssueFields)
+              .status?.name;
+            const statusId: string | undefined = (fields as IssueFields).status
+              ?.id;
+            const isBlocked = Boolean(
+              (fields as IssueFields).customfield_10021
+            );
             const dueDateISO = (fields as IssueFields).duedate;
             const dueDate = dueDateISO ? new Date(dueDateISO) : undefined;
-            const overdue = Boolean(dueDate && isBefore(dueDate, new Date()) && statusId !== IssueStatus.Done);
-            const originalEstimateSeconds: number | undefined = (fields as IssueFields).timeoriginalestimate ?? undefined;
-            const originalEstimate = originalEstimateSeconds ? Duration.seconds(originalEstimateSeconds).format() : "—";
+            const overdue = Boolean(
+              dueDate &&
+                isBefore(dueDate, new Date()) &&
+                statusId !== IssueStatus.Done
+            );
+            const originalEstimateSeconds: number | undefined =
+              (fields as IssueFields).timeoriginalestimate ?? undefined;
+            const originalEstimate = originalEstimateSeconds
+              ? Duration.seconds(originalEstimateSeconds).format()
+              : "—";
 
             function statusBadgeClass(name?: string) {
               switch ((name ?? "").toLowerCase()) {
@@ -76,25 +98,45 @@ export function IssuesTable({ issues, jiraBaseUrl }: IssuesTableProps) {
             }
 
             return (
-              <TableRow key={issue.id ?? key} className={isBlocked ? "bg-muted/30 text-muted-foreground" : undefined}>
+              <TableRow
+                key={issue.id ?? key}
+                className={
+                  isBlocked ? "bg-muted/30 text-muted-foreground" : undefined
+                }
+              >
                 <TableCell>
                   <a href={`/issues/${key}`} className="hover:underline">
                     <div className="max-w-[26rem] truncate flex items-center gap-1">
-                      {isBlocked ? <Lock className="h-3.5 w-3.5 text-muted-foreground" /> : null}
+                      {isBlocked ? (
+                        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                      ) : null}
                       <span className="font-medium">{key}</span>
-                      {jiraBaseUrl ? <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" /> : null}
-                      {summary ? <span className="text-muted-foreground"> — {summary}</span> : null}
+                      {jiraBaseUrl ? (
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+                      ) : null}
+                      {summary ? (
+                        <span className="text-muted-foreground">
+                          {" "}
+                          — {summary}
+                        </span>
+                      ) : null}
                     </div>
                   </a>
                 </TableCell>
                 <TableCell>
-                  <Badge className={`border ${statusBadgeClass(statusName)}`}>{statusName ?? "—"}</Badge>
+                  <Badge className={`border ${statusBadgeClass(statusName)}`}>
+                    {statusName ?? "—"}
+                  </Badge>
                 </TableCell>
-                <TableCell>{(fields as IssueFields).priority?.name ?? "—"}</TableCell>
+                <TableCell>
+                  {(fields as IssueFields).priority?.name ?? "—"}
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                    <span className={overdue ? "text-red-600" : undefined}>{dueDate ? format(dueDate, "dd/MM/yyyy") : "—"}</span>
+                    <span className={overdue ? "text-red-600" : undefined}>
+                      {dueDate ? format(dueDate, "dd/MM/yyyy") : "—"}
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -114,5 +156,3 @@ export function IssuesTable({ issues, jiraBaseUrl }: IssuesTableProps) {
     </div>
   );
 }
-
-

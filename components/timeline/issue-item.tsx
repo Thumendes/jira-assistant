@@ -4,12 +4,13 @@ import { components } from "@/lib/jira/schema";
 import { IssueFields } from "@/lib/jira/types";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, ExternalLink } from "lucide-react";
 import { match } from "ts-pattern";
 import { dialog } from "../dialog";
 import { TransitionSelectClient } from "../issues/transition-select";
 import { TracktTimeButton } from "../track-time";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 
 type IssueItemProps = {
   issue: components["schemas"]["IssueBean"] & { fields: IssueFields };
@@ -30,8 +31,14 @@ export function IssueItem({ issue, status }: IssueItemProps) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="font-semibold text-lg">
-                  {issue.key} — {f?.summary}
+                <h1 className="font-semibold text-lg flex items-center justify-between">
+                  <span>
+                    {issue.key} — {f?.summary}
+                  </span>
+
+                  <Link href={`/issues/${issue.key}`} target="_blank" className="ml-2 text-sm text-blue-500 underline">
+                    <ExternalLink className="inline-block w-4 h-4" />
+                  </Link>
                 </h1>
                 <div className="flex gap-2 mt-2">
                   <Badge variant="outline">Prioridade: {priority}</Badge>
@@ -49,23 +56,15 @@ export function IssueItem({ issue, status }: IssueItemProps) {
             <div className="rounded-md border p-4 space-y-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarDays className="h-4 w-4" />
-                <span>
-                  Criação:{" "}
-                  {f?.created ? format(new Date(f.created), "dd/MM/yyyy") : "—"}
-                </span>
+                <span>Criação: {f?.created ? format(new Date(f.created), "dd/MM/yyyy") : "—"}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarDays className="h-4 w-4" />
-                <span>
-                  Data fixa: {dueDate ? format(dueDate, "dd/MM/yyyy") : "—"}
-                </span>
+                <span>Data fixa: {dueDate ? format(dueDate, "dd/MM/yyyy") : "—"}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>
-                  Estimativa original:{" "}
-                  {estimate ? `${Math.round(estimate / 3600)}h` : "—"}
-                </span>
+                <span>Estimativa original: {estimate ? `${Math.round(estimate / 3600)}h` : "—"}</span>
               </div>
             </div>
           </div>
@@ -75,16 +74,10 @@ export function IssueItem({ issue, status }: IssueItemProps) {
   }
 
   return (
-    <div
-      key={issue.key}
-      onClick={seeDetails}
-      className="flex items-start gap-2 border p-2 rounded-md"
-    >
+    <div key={issue.key} onClick={seeDetails} className="flex items-start gap-2 border p-2 rounded-md">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 justify-between">
-          <div className="text-xs font-medium truncate text-muted-foreground">
-            {issue.key}
-          </div>
+          <div className="text-xs font-medium truncate text-muted-foreground">{issue.key}</div>
 
           <span
             className={cn(
@@ -93,20 +86,14 @@ export function IssueItem({ issue, status }: IssueItemProps) {
                 .with("done", () => "bg-emerald-500")
                 .with("doing", () => "bg-red-500")
                 .with("late", () => "bg-red-500")
-                .exhaustive()
+                .exhaustive(),
             )}
           />
         </div>
-        <div className="text-sm font-medium truncate">
-          {issue.fields.summary}
-        </div>
+        <div className="text-sm font-medium truncate">{issue.fields.summary}</div>
         <div className="text-xs text-muted-foreground flex gap-2 mt-1">
-          {issue.fields.issuetype && (
-            <Badge variant="outline">{issue.fields.issuetype.name}</Badge>
-          )}
-          {issue.fields.status && (
-            <Badge variant="secondary">{issue.fields.status.name}</Badge>
-          )}
+          {issue.fields.issuetype && <Badge variant="outline">{issue.fields.issuetype.name}</Badge>}
+          {issue.fields.status && <Badge variant="secondary">{issue.fields.status.name}</Badge>}
         </div>
       </div>
     </div>
