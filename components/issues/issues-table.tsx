@@ -46,7 +46,7 @@ export function IssuesTable({ issues, jiraBaseUrl }: IssuesTableProps) {
             const statusName: string | undefined = (fields as IssueFields).status?.name;
             const statusId: string | undefined = (fields as IssueFields).status?.id;
             const isBlocked = Boolean((fields as IssueFields).customfield_10021);
-            const dueDateISO: string | undefined = (fields as IssueFields).duedate;
+            const dueDateISO = (fields as IssueFields).duedate;
             const dueDate = dueDateISO ? new Date(dueDateISO) : undefined;
             const overdue = Boolean(dueDate && isBefore(dueDate, new Date()) && statusId !== IssueStatus.Done);
             const originalEstimateSeconds: number | undefined = (fields as IssueFields).timeoriginalestimate ?? undefined;
